@@ -1,0 +1,37 @@
+name: Docker
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build client image
+      run: |
+        docker build -t danielvdm/client-test -f ./client/Dockerfile.dev ./client
+
+    - name: Test client image
+      run: |
+        docker run -e CI=true danielvdm/client-test npm test
+
+    - name: Build and push images
+      run: |
+        # Build images
+        docker build -t danielvdm/multi-client ./client
+        docker build -t danielvdm/multi-nginx ./nginx
+        docker build -t danielvdm/multi-server ./server
+        docker build -t danielvdm/multi-worker ./worker
+        # Log in to docker hub
+        echo '$DOCKER_PASSWORD' | docker login -u "$DOCKER_ID" --password-stdin
+        # Push images to docker hub
+        docker push danielvdm/multi-client
+        docker push danielvdm/multi-nginx
+        docker push danielvdm/multi-server
+        docker push danielvdm/multi-worker
