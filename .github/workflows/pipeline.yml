@@ -26,12 +26,12 @@ jobs:
         # Build images
         docker build -t danielvdm/multi-client ./client
         docker build -t danielvdm/multi-nginx ./nginx
-        docker build -t danielvdm/multi-server ./server
+        docker build -t danielvdm/multi-api ./api
         docker build -t danielvdm/multi-worker ./worker
         # Log in to docker hub
         echo '$DOCKER_PASSWORD' | docker login -u "$DOCKER_ID" --password-stdin
         # Push images to docker hub
         docker push danielvdm/multi-client
         docker push danielvdm/multi-nginx
-        docker push danielvdm/multi-server
+        docker push danielvdm/multi-api
         docker push danielvdm/multi-worker
