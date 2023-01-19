@@ -13,13 +13,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Build client image
+    - name: Build images to test
       run: |
         docker build -t danielvdm/client-test -f ./client/Dockerfile.dev ./client
+        docker build -t danielvdm/api-test -f ./client/Dockerfile.dev ./api
 
-    - name: Test client image
+    - name: Test all images with tests
       run: |
         docker run -e CI=true danielvdm/client-test npm test
+        docker run -e CI=true danielvdm/api-test npm test
 
     - name: Build images
       run: |
